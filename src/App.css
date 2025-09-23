@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+
+.menuhide{
+    display: block;
+}
+.menuhide:unactive{
+    display: none;
+}

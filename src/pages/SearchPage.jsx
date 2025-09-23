@@ -3,6 +3,8 @@ import React from 'react'
 import { FaStar } from "react-icons/fa";
 import { FiMapPin, FiSearch } from "react-icons/fi";
 import { ImMenu } from "react-icons/im";
+import FilterSidebar from '../components/filter';
+import { FaAngleDoubleRight } from "react-icons/fa";
 
 
 const filters = {
@@ -22,6 +24,7 @@ const properties = [
     price: "Rs 1k-2k",
     rating: 4.2,
     city:"Delhi",
+    landmarks:"Near Metro Station",
     tags: ["Single", "Double"],
   },
   {
@@ -32,6 +35,7 @@ const properties = [
     price: "Rs 1k-2k",
     rating: 4.5,
     city:"Mumbai",
+    landmarks:"Near Metro Station",
     tags: ["Single", "Double"],
   },
   {
@@ -42,6 +46,8 @@ const properties = [
     price: "Rs 1k-2k",
     rating: 4.1,
     city:"Bangalore",
+    landmarks:"Near Metro Station",
+    description:"hjadslfpiqrfaodfivmdfv;oikef oe vvfloi merif vej vejk df; lk er;lkfv e;lfk vel;kvwksdjlfhalkfdhlkjsdfkljsfsldflhs",
     tags: ["Single", "Double"],
   },
   {
@@ -93,9 +99,16 @@ const properties = [
 
 const SearchPage = () => {
 
+  const [fltr, setfltr] = useState(true)
+  const [row, setRow] = useState(false)
   const [currentPage, setCurrentPage] = useState(1); // abhi 1st page
-  const itemsPerPage = 6; // ek page me kitne cards dikhane hain
 
+console.log("row"+row,"fltr"+fltr)
+
+
+
+  // const itemsPerPage = 6; // ek page me kitne cards dikhane hain
+  const itemsPerPage = row ? 3 : 6;
   const [selectedFilters, setSelectedFilters] = useState({
     cities: [],
     area: [],
@@ -112,13 +125,18 @@ const SearchPage = () => {
         updated[category] = [...prev[category], value];
       } else {
         updated[category] = prev[category].filter((v) => v !== value);
+ 
       }
+
       return updated;
     });
   }
 
+  console.log(selectedFilters)
+
   // ✅ Filtering logic
   const filteredProperties = properties.filter((p) => {
+
     const cityMatch =
       selectedFilters.cities.length === 0 || selectedFilters.cities.includes(p.city);
 
@@ -128,7 +146,7 @@ const SearchPage = () => {
 
     const landmarkMatch =
       selectedFilters.landmarks.length === 0 ||
-      selectedFilters.landmarks.some((l) => p.title.includes(l));
+      selectedFilters.landmarks.includes(p.landmarks);
 
     const roomMatch =
       selectedFilters.roomType.length === 0 ||
@@ -153,8 +171,19 @@ const SearchPage = () => {
       console.log(e.target.id)
   }
 
+  function handlemenu(){
+    let menu = document.getElementById("menubar");
+    if(menubar){
+      menu.classList.remove("menubar")
+      menu.style.display="none"
+    }else{
+      menu.style.display="block"
+    }
+    
+  }
+
   
-  
+ 
   return (
     <>
       <div className='w-full h-70 flex items-center justify-center'>
@@ -175,17 +204,16 @@ const SearchPage = () => {
                    <span>1000 PG Room are available</span> 
               </div>
               <div className='flex items-center gap-2'>
-                <span className='text-2xl'><ImMenu/></span>
-                <select className='px-4 py-1 border rounded'>  
-                  <option value='' className='px-4'>Filter</option>
-                  <option value='' className='px-4'>Delhi</option>
-                  <option value='' className='px-4'>Noida</option>
-                </select>
+                <span className='text-2xl cursur-pointer menuhide' id='menubar'  onClick={()=>setRow(!row)} ><ImMenu/></span>
+                <button className='px-4 py-1 border rounded flex justify-center items-center gap-3 filteroption' onClick={()=>{setfltr(!fltr),setRow(true),handlemenu()}}>  
+                  <h1>Filter</h1>
+                  <span ><FaAngleDoubleRight /></span>
+                </button>
               </div>
          </div>
-              <div className="flex min-h-screen bg-gray-50">
+              <div className="flex min-h-screen bg-gray-50 ">
       {/* Sidebar Filters */}
-      <aside className="w-72 bg-white shadow-md p-4">
+      {/* <aside className="w-72 bg-white shadow-md p-4">
         <div className="mb-4">
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/India_location_map.svg/1024px-India_location_map.svg.png"
@@ -213,30 +241,53 @@ const SearchPage = () => {
             ))}
           </div>
         ))}
-      </aside>
+      </aside> */}
+     <div className='hidden sm:block'>
+     {
+        fltr?<FilterSidebar
+        filters={filters}
+        onFilterChange={checkedvalue}
+      />:""
+      }
+     </div>
+      
 
+      
       {/* Properties */}
-      <main className="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* <main className="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> */}
+      <main
+  className={`flex-1 p-6 grid gap-6 h-50
+    ${row ? "grid-cols-1" : fltr ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}
+>
         {currentItems.map((p) => (
           <div
-            key={p.id}
-            className="bg-white h-90 rounded-2xl shadow hover:shadow-lg transition p-3"
-          >
-            <img
-              src={p.image}
-              alt={p.title }
-              className="w-full h-48 object-cover rounded-xl hover:scale-105 duration-300 ease-in-out"
-            />
-            <div className="mt-3">
-              <h3 className="font-semibold text-lg">{p.title}</h3>
-              <div className="flex items-center text-yellow-500">
-                <FaStar />
-                <span className="ml-1 text-sm">{p.rating}</span>
-              </div>
-              <div className='flex items-center justify-between'>
-              <span className="mt-1 font-medium">{p.price}</span>
-              <span className="mt-1 font-medium ">{p.city}</span>
-              </div>
+  key={p.id}
+  className={`bg-white rounded-2xl shadow hover:shadow-lg transition p-3 
+    ${row ? "flex gap-4 h-60" : ""}
+  `}
+>
+    
+       <div className={`${row ? "w-1/3" : "w-full"}`}>
+          <img
+            src={p.image}
+            alt={p.title}
+            className="w-full h-full object-cover rounded-xl"
+          />
+        </div>
+        <div className={`${row ? "w-2/3 flex flex-col justify-between" : "mt-3"}`}>
+        <div>
+          <h3 className="font-semibold text-lg">{p.title}</h3>
+          <div className="flex items-center text-yellow-500">
+            <FaStar />
+            <span className="ml-1 text-sm">{p.rating}</span>
+          </div>
+          <div className="flex items-center justify-between mt-2">
+            <span className="font-medium">{p.price}</span>
+            <span className="font-medium">{p.city}</span>
+            <span className="font-medium">{p.landmarks}</span>
+          </div>
+            <span className="font-medium">{fltr?"":`${p.description}`}</span>
+        </div>
               <div className="flex  mt-2 items-center justify-between">
                 <div className='flex gap-3'>
                 {p.tags.map((t, i) => (
@@ -263,7 +314,7 @@ const SearchPage = () => {
       </main>
       </div>
 
-      <div className="flex justify-center gap-2 mt-6">
+      <div className={fltr?"flex justify-center gap-2 mt-30" :"flex justify-center gap-2 mt-65"}>
         <button
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
