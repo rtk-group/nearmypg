@@ -171,16 +171,7 @@ console.log("row"+row,"fltr"+fltr)
       console.log(e.target.id)
   }
 
-  function handlemenu(){
-    let menu = document.getElementById("menubar");
-    if(menubar){
-      menu.classList.remove("menubar")
-      menu.style.display="none"
-    }else{
-      menu.style.display="block"
-    }
-    
-  }
+ 
 
   
  
@@ -204,8 +195,8 @@ console.log("row"+row,"fltr"+fltr)
                    <span>1000 PG Room are available</span> 
               </div>
               <div className='flex items-center gap-2'>
-                <span className='text-2xl cursur-pointer menuhide' id='menubar'  onClick={()=>setRow(!row)} ><ImMenu/></span>
-                <button className='px-4 py-1 border rounded flex justify-center items-center gap-3 filteroption' onClick={()=>{setfltr(!fltr),setRow(true),handlemenu()}}>  
+                <span className={`text-2xl cursur-pointer ${fltr?'':'hidden'}`} id='menubar'  onClick={()=>setRow(!row)} ><ImMenu/></span>
+                <button className='px-4 py-1 border rounded flex justify-center items-center gap-3 filteroption' onClick={()=>{setfltr(!fltr),setRow(true)}}>  
                   <h1>Filter</h1>
                   <span ><FaAngleDoubleRight /></span>
                 </button>

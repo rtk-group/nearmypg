@@ -1,8 +1,8 @@
 import React from "react";
 
-const FilterSidebar = ({ filters={},  onFilterChange={} }) => {
+const FilterSidebar = ({ filters={}  , fltr,  onFilterChange={} }) => {
   return (
-    <aside className="w-72 bg-white shadow-md p-4">
+    <aside className={`w-72 bg-white shadow-md p-4  ${fltr?'hidden':''}`}>
       <div className="mb-4">
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/India_location_map.svg/1024px-India_location_map.svg.png"
